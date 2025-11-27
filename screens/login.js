@@ -48,12 +48,33 @@ export default function Login({ navigation }) {
         Entre na sua conta!
       </Text>
 
-      <TextInput style={est.textBox} placeholder='E-mail' placeholderTextColor='lightGray' value={email} onChangeText={setEmail} />
+      <TextInput
+        style={est.textBox}
+        placeholder='E-mail'
+        placeholderTextColor='#888'
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+        autoCorrect={false}
+        spellCheck={false}
+        keyboardType="email-address"
+        importantForAutofill="no"
+        autoComplete="off"
+        textContentType="none"
+      />
 
       <View style={est.passwordContainer}>
-        <TextInput style={est.passwordInput} placeholder='Senha' placeholderTextColor='lightGray' 
-          secureTextEntry={!showPassword} 
-          value={senha} onChangeText={setSenha} />
+        <TextInput 
+          style={est.passwordInput} 
+          placeholder='Senha'
+          placeholderTextColor='#888'
+          secureTextEntry={!showPassword}
+          value={senha}
+          onChangeText={setSenha}
+          autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
+        />
         <TouchableOpacity
           style={est.eyeIcon}
           onPress={() => setShowPassword(!showPassword)}
@@ -165,6 +186,7 @@ const est = StyleSheet.create({
     flex: 1,
     height: 40,
     paddingHorizontal: 17,
+    color: '#141414ff'
   },
   textBox: {
     borderRadius: 10,

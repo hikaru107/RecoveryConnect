@@ -12,8 +12,34 @@ export default function Cadastro({ navigation }) {
   const [cidade, setCidade] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [confirmSenha, setConfirmSenha] = useState('');
   const [loading, setLoading] = useState(false);
   const [aceitou, setAceitou] = useState(false);
+
+  const [erroEmail, setErroEmail] = useState('');
+  const [erroSenha, setErroSenha] = useState('');
+  const [erroConfirm, setErroConfirm] = useState('');
+  const [senhaTocada, setSenhaTocada] = useState(false);
+  const [senhaConfTocada, setSenhaConfTocada] = useState(false);
+
+  const formValido =
+    nome.trim().length > 0 &&
+    email.trim().length > 0 &&
+    cidade.trim().length > 0 &&
+    senha.trim().length > 0 &&
+    confirmSenha.trim().length > 0 &&
+    senha === confirmSenha &&
+    validarEmail(email) &&
+    aceitou &&
+    !erroEmail &&
+    !erroSenha &&
+    !erroConfirm;
+
+  const validarEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
 
   function handleCheck() {
     setAceitou((prev) => !prev);
@@ -70,18 +96,50 @@ export default function Cadastro({ navigation }) {
 
           <Text style={est.title}>Crie a sua conta!</Text>
 
-          <TextInput style={est.textBox} placeholder='Nome de Usuário' placeholderTextColor='lightGray' value={nome} onChangeText={setNome} />
-          <TextInput style={est.textBox} placeholder='E-mail' placeholderTextColor='lightGray' value={email} onChangeText={setEmail} />
-          <TextInput style={est.textBox} placeholder='Cidade' placeholderTextColor='lightGray' value={cidade} onChangeText={setCidade} />
+          <TextInput style={est.textBox} placeholder='Nome de Usuário' placeholderTextColor='#888' value={nome} onChangeText={setNome} />
+          <TextInput
+            style={[
+              est.textBox,
+              erroEmail && { borderColor: 'red' }
+            ]}
+            placeholder='E-mail'
+            placeholderTextColor='#888'
+            autoCapitalize="none"
+            autoCorrect={false}
+            spellCheck={false}
+            keyboardType="email-address"
+            importantForAutofill="no"
+            autoComplete="off"
+            textContentType="none"
+            value={email}
+            onChangeText={(t) => {
+              setEmail(t);
+              if (!validarEmail(t)) setErroEmail('E-mail inválido');
+              else setErroEmail('');
+            }}
+          />
+          {erroEmail.length > 0 && (
+            <Text style={{ color: 'red', fontSize: 11, width: '80%', paddingLeft: 10 }}>{erroEmail}</Text>
+          )}
+          <TextInput style={est.textBox} placeholder='Cidade' placeholderTextColor='#888' value={cidade} onChangeText={setCidade} />
 
-          <View style={est.passwordContainer}>
+          <View
+            style={[
+              est.passwordContainer,
+              !erroSenha && senhaTocada && { borderColor: 'red' }
+            ]}>
             <TextInput
               style={est.passwordInput}
               placeholder='Crie sua Senha'
-              placeholderTextColor='lightGray'
+              placeholderTextColor='#888'
               secureTextEntry={!showPassword}
               value={senha}
-              onChangeText={setSenha}
+              onFocus={() => setSenhaTocada(true)}
+              onChangeText={(t) => {
+                setSenha(t);
+                if (t.length < 6) setErroSenha('A senha deve ter pelo menos 6 caracteres');
+                else setErroSenha('');
+              }}
             />
             <TouchableOpacity
               style={est.eyeIcon}
@@ -90,13 +148,27 @@ export default function Cadastro({ navigation }) {
               <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color='gray' />
             </TouchableOpacity>
           </View>
+          {erroSenha.length > 0 && (
+            <Text style={{ color: 'red', fontSize: 11, width: '80%', paddingLeft: 10 }}>{erroSenha}</Text>
+          )}
 
-          <View style={est.passwordContainer}>
+          <View
+            style={[
+              est.passwordContainer,
+              !confirmSenha && senhaConfTocada && { borderColor: 'red' }  // <— borda no container!
+            ]}>
             <TextInput
               style={est.passwordInput}
               placeholder='Confirme sua Nova Senha'
-              placeholderTextColor='lightGray'
+              placeholderTextColor='#888'
               secureTextEntry={!showPassword}
+              value={confirmSenha}
+              onFocus={() => setSenhaConfTocada(true)}
+              onChangeText={(t) => {
+                setConfirmSenha(t);
+                if (t !== senha) setErroConfirm('As senhas não coincidem');
+                else setErroConfirm('');
+              }}
             />
             <TouchableOpacity
               style={est.eyeIcon}
@@ -105,6 +177,9 @@ export default function Cadastro({ navigation }) {
               <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color='gray' />
             </TouchableOpacity>
           </View>
+          {erroConfirm.length > 0 && (
+            <Text style={{ color: 'red', fontSize: 11, width: '80%', paddingLeft: 10 }}>{erroConfirm}</Text>
+          )}
 
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '70%' }}>
             <CheckBox
@@ -115,7 +190,7 @@ export default function Cadastro({ navigation }) {
             <Text style={{ fontSize: 12 }}>Li e concordo com os
               <Text
                 style={{
-                  color: "#5ce1e6",       // azul claro
+                  color: "#5ce1e6",
                   textDecorationLine: "underline",
                   fontWeight: "500",
                 }}
@@ -133,9 +208,9 @@ export default function Cadastro({ navigation }) {
           <TouchableOpacity
             style={[
               est.button,
-              !aceitou && { backgroundColor: '#cececeff', }
+              !formValido && { backgroundColor: '#cececeff', }
             ]}
-            disabled={!aceitou}   
+            disabled={!formValido}
             onPress={handleSignUp}
           >
             <Text style={{ alignSelf: 'center', fontWeight: 'bold' }}>{loading ? 'Carregando...' : 'Cadastrar'}</Text>
@@ -193,6 +268,7 @@ const est = StyleSheet.create({
     flex: 1,
     height: 40,
     paddingHorizontal: 20,
+    color: '#141414ff'
   },
   eyeIcon: {
     paddingHorizontal: 10,

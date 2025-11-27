@@ -19,6 +19,28 @@ export default function OrgCadastro1({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
   const [aceitou, setAceitou] = useState(false);
 
+  const [erroEmail, setErroEmail] = useState('');
+  const [emailTocado, setEmailTocado] = useState(false);
+
+  const [erroCnpj, setErroCnpj] = useState('');
+  const [cnpjTocado, setCnpjTocado] = useState(false);
+
+  const [erroTelefone, setErroTelefone] = useState('');
+  const [telefoneTocado, setTelefoneTocado] = useState(false);
+
+  const [erroSenha, setErroSenha] = useState('');
+  const [senhaTocada, setSenhaTocada] = useState(false);
+
+  const [erroConfirm, setErroConfirm] = useState('');
+  const [confirmTocada, setConfirmTocada] = useState(false);
+
+  const [confirmSenha, setConfirmSenha] = useState('');
+
+  const validarEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
   function handleCheck() {
     setAceitou((prev) => !prev);
   }
@@ -33,7 +55,77 @@ export default function OrgCadastro1({ navigation }) {
     senha, setSenha
   } = useSignup();
 
+  const formValido =
+    nome.trim().length > 0 &&
+    email.trim().length > 0 &&
+    cnpj.trim().length > 0 &&
+    tipo.trim().length > 0 &&
+    telefone.trim().length > 0 &&
+    senha.trim().length > 0 &&
+    confirmSenha.trim().length > 0 &&
+    senha === confirmSenha &&
+    validarEmail(email) &&
+    aceitou &&
+    !erroEmail &&
+    !erroSenha &&
+    !erroConfirm;
+
   const [mask, setMask] = useState("(99) 99999-9999");
+
+  function validarCNPJ(cnpj) {
+    cnpj = cnpj.replace(/[^\d]+/g, '');
+
+    if (cnpj.length !== 14) return false;
+
+    // Rejeita CNPJs inválidos conhecidos
+    if (/^(\d)\1{13}$/.test(cnpj)) return false;
+
+    let tamanho = cnpj.length - 2;
+    let numeros = cnpj.substring(0, tamanho);
+    let digitos = cnpj.substring(tamanho);
+    let soma = 0;
+    let pos = tamanho - 7;
+
+    for (let i = tamanho; i >= 1; i--) {
+      soma += numeros.charAt(tamanho - i) * pos--;
+      if (pos < 2) pos = 9;
+    }
+
+    let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+    if (resultado != digitos.charAt(0)) return false;
+
+    tamanho += 1;
+    numeros = cnpj.substring(0, tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+
+    for (let i = tamanho; i >= 1; i--) {
+      soma += numeros.charAt(tamanho - i) * pos--;
+      if (pos < 2) pos = 9;
+    }
+
+    resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+    if (resultado != digitos.charAt(1)) return false;
+
+    return true;
+  }
+
+  async function verificarExistenciaCNPJ(cnpj) {
+    const somenteNumeros = cnpj.replace(/[^\d]+/g, '');
+
+    try {
+      const response = await fetch(`https://www.receitaws.com.br/v1/cnpj/${somenteNumeros}`);
+      const data = await response.json();
+
+      if (data.status === "ERROR") {
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 
   return (
     <SafeAreaProvider>
@@ -59,7 +151,7 @@ export default function OrgCadastro1({ navigation }) {
           <TextInput
             style={est.textBox}
             placeholder='Nome de Usuário / Nome da Organização'
-            placeholderTextColor='lightGray'
+            placeholderTextColor='#888'
             value={nome}
             onChangeText={setNome}
           />
@@ -84,77 +176,207 @@ export default function OrgCadastro1({ navigation }) {
           <MaskedTextInput
             mask="99.999.999/9999-99"
             keyboardType='numeric'
-            style={est.textBox}
+            style={[
+              est.textBox,
+              erroCnpj && cnpjTocado ? { borderColor: 'red' } : {}
+            ]}
             placeholder='CNPJ'
-            placeholderTextColor='lightGray'
+            placeholderTextColor='#888'
             value={cnpj}
-            onChangeText={(masked) => {
+            onFocus={() => setCnpjTocado(true)}
+            onChangeText={async (masked, unmasked) => {
               setCnpj(masked);
+
+              if (cnpjTocado) {
+                // 1 — valida CNPJ matematicamente
+                if (!validarCNPJ(masked)) {
+                  setErroCnpj('CNPJ inválido');
+                  return;
+                }
+
+                // 2 — valida existência com API
+                const existe = await verificarExistenciaCNPJ(masked);
+
+                if (!existe) {
+                  setErroCnpj('CNPJ não encontrado na Receita Federal');
+                } else {
+                  setErroCnpj('');
+                }
+              }
+            }}
+            onBlur={async () => {
+              setCnpjTocado(true);
+
+              if (!validarCNPJ(cnpj)) {
+                setErroCnpj('CNPJ inválido');
+                return;
+              }
+
+              const existe = await verificarExistenciaCNPJ(cnpj);
+
+              if (!existe) {
+                setErroCnpj('CNPJ não encontrado na Receita Federal');
+              } else {
+                setErroCnpj('');
+              }
             }}
           />
+
+          {erroCnpj && cnpjTocado && (
+            <Text style={{ color: 'red', fontSize: 11, width: '80%', paddingLeft: 10 }}>
+              {erroCnpj}
+            </Text>
+          )}
+
           <TextInput
-            style={est.textBox}
+            style={[
+              est.textBox,
+              emailTocado && erroEmail && { borderColor: 'red' }
+            ]}
             placeholder='Email'
-            placeholderTextColor='lightGray'
+            placeholderTextColor='#888'
+            autoCapitalize="none"
+            autoCorrect={false}
+            spellCheck={false}
+            keyboardType="email-address"
+            importantForAutofill="no"
+            autoComplete="off"
+            textContentType="none"
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(t) => {
+              setEmail(t);
+              if (emailTocado) {
+                if (!validarEmail(t)) setErroEmail('E-mail inválido');
+                else setErroEmail('');
+              }
+            }}
+            onBlur={() => {
+              setEmailTocado(true);
+              if (!validarEmail(email)) setErroEmail('E-mail inválido');
+            }}
           />
+          {emailTocado && erroEmail !== '' && (
+            <Text style={{ color: 'red', fontSize: 11, width: '80%', paddingLeft: 10 }}>
+              {erroEmail}
+            </Text>
+          )}
+
           <MaskedTextInput
             mask={mask}
+            keyboardType="numeric"
+            value={telefone}
+            style={[
+              est.textBox,
+              erroTelefone && telefoneTocado ? { borderColor: 'red' } : {}
+            ]}
+            placeholder="Telefone"
+            placeholderTextColor='#888'
+
+            onFocus={() => setTelefoneTocado(true)}
+
             onChangeText={(masked, unmasked) => {
-              if (unmasked.length <= 10) {
-                setMask("(99) 9999-99999");
-              } else {
+              if (unmasked.length > 10) {
                 setMask("(99) 99999-9999");
+              } else {
+                setMask("(99) 9999-99999");
               }
               setTelefone(masked);
+
+              if (telefoneTocado) {
+                if (unmasked.length < 10) {
+                  setErroTelefone("Telefone inválido");
+                } else {
+                  setErroTelefone("");
+                }
+              }
             }}
-            value={telefone}
-            style={est.textBox}
-            placeholder="Telefone"
-            placeholderTextColor="lightGray"
-            keyboardType="numeric"
           />
+          {erroTelefone && telefoneTocado && (
+            <Text style={{ color: 'red', fontSize: 11, width: "80%", paddingLeft: 10 }}>
+              {erroTelefone}
+            </Text>
+          )}
+
           <TextInput
             style={est.textBox}
             placeholder='Rede Social (opcional)'
-            placeholderTextColor='lightGray'
+            placeholderTextColor='#888'
             value={rede_social}
             onChangeText={setRede_social}
           />
-          <View style={est.passwordContainer}>
+          <View style={[
+            est.passwordContainer,
+            senhaTocada && erroSenha && { borderColor: 'red' }
+          ]}>
             <TextInput
               style={est.passwordInput}
               placeholder='Crie sua Senha'
-              placeholderTextColor='lightGray'
+              placeholderTextColor='#888'
               secureTextEntry={!showPassword}
               value={senha}
-              onChangeText={setSenha}
+              onChangeText={(t) => {
+                setSenha(t);
+                if (senhaTocada) {
+                  if (t.length < 6) setErroSenha('A senha deve ter pelo menos 6 caracteres');
+                  else setErroSenha('');
+                }
+              }}
+              onBlur={() => {
+                setSenhaTocada(true);
+                if (senha.length < 6) setErroSenha('A senha deve ter pelo menos 6 caracteres');
+              }}
             />
+
             <TouchableOpacity
               style={est.eyeIcon}
               onPress={() => setShowPassword(!showPassword)}
             >
-              <Ionicons
-                name={showPassword ? "eye-off" : "eye"}
-                size={24}
-                color="gray"
-              />
+              <Ionicons name={showPassword ? "eye-off" : "eye"} size={24} color="gray" />
             </TouchableOpacity>
           </View>
-          <View style={est.passwordContainer}>
-            <TextInput style={est.passwordInput} placeholder='Confirme sua Nova Senha' placeholderTextColor='lightGray' secureTextEntry={!showPassword} />
+
+          {senhaTocada && erroSenha !== '' && (
+            <Text style={{ color: 'red', fontSize: 11, width: '80%', paddingLeft: 10 }}>
+              {erroSenha}
+            </Text>
+          )}
+
+          <View style={[
+            est.passwordContainer,
+            confirmTocada && erroConfirm && { borderColor: 'red' }
+          ]}>
+            <TextInput
+              style={est.passwordInput}
+              placeholder='Confirme sua Senha'
+              placeholderTextColor='#888'
+              secureTextEntry={!showPassword}
+              value={confirmSenha}
+              onChangeText={(t) => {
+                setConfirmSenha(t);
+                if (confirmTocada) {
+                  if (t !== senha) setErroConfirm('As senhas não coincidem');
+                  else setErroConfirm('');
+                }
+              }}
+              onBlur={() => {
+                setConfirmTocada(true);
+                if (confirmSenha !== senha) setErroConfirm('As senhas não coincidem');
+              }}
+            />
+
             <TouchableOpacity
               style={est.eyeIcon}
               onPress={() => setShowPassword(!showPassword)}
             >
-              <Ionicons
-                name={showPassword ? "eye-off" : "eye"}
-                size={24}
-                color="gray"
-              />
+              <Ionicons name={showPassword ? "eye-off" : "eye"} size={24} color="gray" />
             </TouchableOpacity>
           </View>
+
+          {confirmTocada && erroConfirm !== '' && (
+            <Text style={{ color: 'red', fontSize: 11, width: '80%', paddingLeft: 10 }}>
+              {erroConfirm}
+            </Text>
+          )}
 
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '70%' }}>
             <CheckBox
@@ -180,12 +402,12 @@ export default function OrgCadastro1({ navigation }) {
             </Text>
           </View>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[
               est.button,
-              !aceitou && { backgroundColor: '#cececeff', }
+              !formValido && { backgroundColor: '#cececeff', }
             ]}
-            disabled={!aceitou}   
+            disabled={!formValido}
             onPress={() => navigation.navigate('OrgCadastro2')}
           >
             <Text style={{ alignSelf: 'center', fontWeight: 'bold', }}>Etapa 1 de 3</Text>
@@ -300,6 +522,7 @@ const est = StyleSheet.create({
     flex: 1,
     height: 40,
     paddingHorizontal: 20,
+    color: '#141414ff'
   },
   senhaReq: {
     fontSize: 12,

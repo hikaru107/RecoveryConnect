@@ -51,16 +51,23 @@ export default function OrgLogin({ navigation }) {
       <TextInput
         style={est.textBox}
         placeholder='Email'
-        placeholderTextColor='lightGray'
+        placeholderTextColor='#888'
         value={email}
         onChangeText={setEmail}
+        autoCapitalize="none"
+        autoCorrect={false}
+        spellCheck={false}
+        keyboardType="email-address"
+        importantForAutofill="no"
+        autoComplete="off"
+        textContentType="none"
       />
 
       <View style={est.passwordContainer}>
         <TextInput
           style={est.passwordInput}
           placeholder='Senha'
-          placeholderTextColor='lightGray'
+          placeholderTextColor='#888'
           secureTextEntry={!showPassword}
           value={senha}
           onChangeText={setSenha}
@@ -180,6 +187,7 @@ const est = StyleSheet.create({
     flex: 1,
     height: 40,
     paddingHorizontal: 17,
+    color: '#141414ff'
   },
   textBox: {
     borderRadius: 10,

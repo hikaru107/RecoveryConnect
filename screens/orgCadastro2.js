@@ -3,8 +3,12 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { MaskedTextInput } from 'react-native-mask-text';
 import { useSignup } from '../context/UserSignupContext';
+import { useState } from 'react';
 
 export default function OrgCadastro2({ navigation }) {
+  const [erroCep, setErroCep] = useState('');
+  const [cepTocado, setCepTocado] = useState(false);
+
   const {
     cep, setCep,
     rua, setRua,
@@ -13,6 +17,27 @@ export default function OrgCadastro2({ navigation }) {
     cidade, setCidade,
     estado, setEstado
   } = useSignup();
+
+  const formValido =
+    cep.trim().length > 0 &&
+    rua.trim().length > 0 &&
+    numero.trim().length > 0 &&
+    bairro.trim().length > 0 &&
+    cidade.trim().length > 0 &&
+    estado.trim().length > 0;
+
+  const buscarCep = async (cep) => {
+    const cepLimpo = cep.replace(/\D/g, '');
+    try {
+      const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+      const data = await res.json();
+      if (data.erro) return null;
+      return data;
+    } catch (err) {
+      return null;
+    }
+  };
+
 
   return (
     <SafeAreaProvider>
@@ -28,7 +53,7 @@ export default function OrgCadastro2({ navigation }) {
               <Image source={require('../assets/arrowLeft.png')} style={{ marginRight: 20 }} />
             </TouchableOpacity>
             <Text style={est.title}>
-              Continue o cadastro!
+              Estamos na metade!
             </Text>
           </View>
           <Text style={{ fontSize: 16, marginBottom: 20, maxWidth: '80%', textAlign: 'center', fontWeight: 500 }}>
@@ -36,54 +61,97 @@ export default function OrgCadastro2({ navigation }) {
           </Text>
 
           <MaskedTextInput
-            mask="99999-999" 
+            mask="99999-999"
             keyboardType='numeric'
-            style={est.textBox} 
-            placeholder='CEP' 
+            style={[
+              est.textBox,
+              cepTocado && erroCep && { borderColor: 'red' }
+            ]}
+            placeholder='CEP'
             placeholderTextColor='lightGray'
             value={cep}
-            onChangeText={(masked) => {
-              setCep(masked);
+            onChangeText={(t) => {
+              setCep(t);
+
+              if (cepTocado) {
+                if (t.length < 9) setErroCep('CEP inválido');
+                else setErroCep('');
+              }
+            }}
+            onBlur={async () => {
+              setCepTocado(true);
+
+              if (cep.length < 9) {
+                setErroCep('CEP inválido');
+                return;
+              }
+
+              setErroCep('');
+
+              const dados = await buscarCep(cep);
+              if (!dados) {
+                setErroCep('CEP não encontrado');
+                return;
+              }
+
+              setRua(dados.logradouro || '');
+              setBairro(dados.bairro || '');
+              setCidade(dados.localidade || '');
+              setEstado(dados.uf || '');
             }}
           />
-          <TextInput 
-            style={est.textBox} 
-            placeholder='Rua' 
-            placeholderTextColor='lightGray'
+
+          {cepTocado && erroCep !== '' && (
+            <Text style={{ color: 'red', fontSize: 11, width: '80%', paddingLeft: 10 }}>
+              {erroCep}
+            </Text>
+          )}
+
+          <TextInput
+            style={est.textBox}
+            placeholder='Rua'
+            placeholderTextColor='#888'
             value={rua}
             onChangeText={setRua}
           />
-          <TextInput 
-            style={est.textBox} 
-            placeholder='Bairro' 
-            placeholderTextColor='lightGray'
+          <TextInput
+            style={est.textBox}
+            placeholder='Bairro'
+            placeholderTextColor='#888'
             value={bairro}
             onChangeText={setBairro}
           />
-          <TextInput 
-            style={est.textBox} 
-            placeholder='Número' 
-            placeholderTextColor='lightGray'
+          <TextInput
+            style={est.textBox}
+            placeholder='Número'
+            placeholderTextColor='#888'
             value={numero}
             onChangeText={setNumero}
+            keyboardType='numeric'
           />
           <TextInput
             style={est.textBox}
-            placeholder='Cidade' 
-            placeholderTextColor='lightGray'
+            placeholder='Cidade'
+            placeholderTextColor='#888'
             value={cidade}
-            onChangeText={setCidade} 
+            onChangeText={setCidade}
           />
-          <TextInput 
-            style={est.textBox} 
-            placeholder='Estado' 
-            placeholderTextColor='lightGray'
+          <TextInput
+            style={est.textBox}
+            placeholder='Estado'
+            placeholderTextColor='#888'
             value={estado}
-            onChangeText={setEstado} 
+            onChangeText={setEstado}
           />
 
           <View style={est.buttonContainer}>
-            <TouchableOpacity style={est.button} onPress={() => navigation.navigate("OrgCadastro3")}>
+            <TouchableOpacity
+              style={[
+                est.button,
+                !formValido && { backgroundColor: '#cececeff', }
+              ]}
+              onPress={() => navigation.navigate("OrgCadastro3")}
+            >
               <Text style={{ alignSelf: 'center', fontWeight: 'bold', }}>Etapa 2 de 3</Text>
             </TouchableOpacity>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: '30%' }}>
