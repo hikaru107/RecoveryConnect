@@ -1,7 +1,3 @@
-<h4 align="center"> 
-	:construction:  PROJETO EM DESENVOLVIMENTO  :construction:
-</h4>
-
 # :green_heart: RecoveryConnect
 Projeto de TCC do curso de Desenvolvimento de Sistemas na ETEC de Taboão da Serra. RecoveryConnect é um aplicativo que oferece apoio à recuperação, conectando dependentes químicos, seus familiares e amigos em uma rede de cuidado e suporte.
 
@@ -12,11 +8,11 @@ Projeto de TCC do curso de Desenvolvimento de Sistemas na ETEC de Taboão da Ser
 - `Metas`: acompanhe desafios que ajudam a orientar e fortalecer o processo de recuperação.
 
 # 🧑‍🦱 Usuários para teste
-- `Paciente`: email - user@mail; senha - 111111
-- `Organização`: email - organizacao@mail; senha - 123456
+- `Paciente`: email - usuario.teste@gmail.com; senha - 000000
+- `Organização`: email - amorsaude.taboao@gmail.com; senha - Amorsaude
 
 # 📖 Visual do projeto
-- Link para o vídeo de apresentação: https://youtu.be/i9QZ7meoN4w
+- Link para o vídeo de apresentação: https://youtu.be/PAR5GG7ffl8
 
 # 🤵 Integrantes da equipe
 - `Carlos Augusto Camillo de Andrade Junior`: Analista e Redator
