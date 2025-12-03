@@ -37,14 +37,14 @@ const style = StyleSheet.create({
     width: '100%',
     height: undefined,
     maxHeight: '40%',
-    aspectRatio: 1.25, 
+    aspectRatio: 1.25,
     resizeMode: 'cover',
   },
 
-  title:{
+  title: {
     fontSize: 24,
-    fontWeight:'bold',
-    marginTop: 35,
+    fontWeight: 'bold',
+    marginTop: 45,
   },
   text: {
     width: '70%',
@@ -54,9 +54,12 @@ const style = StyleSheet.create({
   },
 
   buttonContainer: {
+    position: 'absolute',
+    bottom: 120,
     width: '60%',
     alignItems: 'center',
   },
+
   button: {
     backgroundColor: '#5ce1e6',
     borderRadius: 100,

@@ -1,30 +1,31 @@
-import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 
-export default function Tutorial2({navigation}) {
+export default function Tutorial2({ navigation }) {
   return (
     <View style={style.container}>
-      <Image style={style.img} source={require('../imagens/tutorial2.png')}/>
+      <Image style={style.img} source={require('../imagens/tutorial2.png')} />
 
       <Text style={style.title}>Inclua desafios na sua rotina</Text>
       <Text style={style.text}>
-        Os <Text style={{fontWeight: 'bold'}}>desafios</Text> propostos ajudam você a concluir metas para superar o estímulo! Tente bater o objetivo de uma forma honesta e mostre sua capacidade!
+        Os <Text style={{ fontWeight: 'bold' }}>desafios</Text> propostos ajudam você a concluir metas para superar o estímulo! Tente bater o objetivo de uma forma honesta e mostre sua capacidade!
       </Text>
 
       <View style={style.buttonContainer}>
-        <TouchableOpacity style={style.button} onPress={()=>navigation.navigate("Tutorial3")}>
-          <Text style={{alignSelf:'center',fontWeight:'bold',}}>Prosseguir</Text>
+        <TouchableOpacity style={style.button} onPress={() => navigation.navigate("Tutorial3")}>
+          <Text style={{ alignSelf: 'center', fontWeight: 'bold', }}>Prosseguir</Text>
         </TouchableOpacity>
-        <View style={{flexDirection: 'row', width: '95%'}}>
-          <View style={style.inactiveBar}/>
-          <View style={style.activeBar}/>
-          <View style={style.inactiveBar}/>
-          <View style={style.inactiveBar}/>
+        <View style={{ flexDirection: 'row', width: '95%' }}>
+          <View style={style.inactiveBar} />
+          <View style={style.activeBar} />
+          <View style={style.inactiveBar} />
+          <View style={style.inactiveBar} />
         </View>
+        <TouchableOpacity style={style.buttonBack} onPress={() => navigation.goBack()}>
+          <Text style={style.textBack}>Voltar</Text>
+        </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={style.buttonBack} onPress={() => navigation.goBack()}>
-        <Text style={style.textBack}>Voltar</Text>
-      </TouchableOpacity>
+
     </View>
   );
 }
@@ -32,23 +33,23 @@ export default function Tutorial2({navigation}) {
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection:'column',
+    flexDirection: 'column',
     backgroundColor: 'white',
-    alignItems:'center',
+    alignItems: 'center',
   },
 
   img: {
     width: '100%',
     height: undefined,
     maxHeight: '40%',
-    aspectRatio: 1.25, 
+    aspectRatio: 1.25,
     resizeMode: 'cover',
   },
 
-  title:{
+  title: {
     fontSize: 24,
-    fontWeight:'bold',
-    marginTop: 35,
+    fontWeight: 'bold',
+    marginTop: 45,
   },
   text: {
     width: '70%',
@@ -56,16 +57,19 @@ const style = StyleSheet.create({
     lineHeight: 23,
     marginVertical: 15,
   },
-  
+
   buttonContainer: {
+    position: 'absolute',
+    bottom: 80,
     width: '60%',
-    alignItems: 'center',  
+    alignItems: 'center',
   },
-  button:{
-    backgroundColor:'#5ce1e6',
-    borderRadius:100,
+
+  button: {
+    backgroundColor: '#5ce1e6',
+    borderRadius: 100,
     padding: 10,
-    width:'100%',
+    width: '100%',
     marginTop: 20,
     marginBottom: 5,
   },
