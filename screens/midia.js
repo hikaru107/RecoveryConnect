@@ -115,21 +115,21 @@ const style = StyleSheet.create({
     marginVertical: 10,
     marginHorizontal: 10,
     width: Dimensions.get('window').width * 0.6,
-    height: Dimensions.get('window').height * 0.32,
+    height: Dimensions.get('window').height * 0.28,
   },
   tituloMidia: {
-    fontSize: 16,
+    fontSize: 15,
     marginVertical: 10,
     width: '90%',
     height: '35%',
   },
   imagem: {
     width: '100%',
-    height: '50%',
+    height: '45%',
     borderRadius: 10,
   },
   data: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#c0c0c0',
     height: '10%',
   }

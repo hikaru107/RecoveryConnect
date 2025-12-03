@@ -150,6 +150,7 @@ export default function OrgCadastro2({ navigation }) {
                 est.button,
                 !formValido && { backgroundColor: '#cececeff', }
               ]}
+              disabled={!formValido}
               onPress={() => navigation.navigate("OrgCadastro3")}
             >
               <Text style={{ alignSelf: 'center', fontWeight: 'bold', }}>Etapa 2 de 3</Text>
@@ -176,7 +177,6 @@ export default function OrgCadastro2({ navigation }) {
 
 const est = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'column',
     backgroundColor: 'white',
     alignItems: 'center',

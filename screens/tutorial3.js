@@ -39,16 +39,20 @@ const style = StyleSheet.create({
 
   img: {
     width: '100%',
+    height: undefined,
+    maxHeight: '40%',
+    aspectRatio: 1.25, 
+    resizeMode: 'cover',
   },
 
   title:{
-    fontSize: 28,
+    fontSize: 24,
     fontWeight:'bold',
     marginTop: 35,
   },
   text: {
     width: '70%',
-    fontSize: 17,
+    fontSize: 16,
     lineHeight: 23,
     marginVertical: 15,
   },

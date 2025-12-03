@@ -244,12 +244,12 @@ const style = StyleSheet.create({
   },
   optionButton: {
     alignItems: 'center',
-    padding: 6,
+    padding: 5,
   },
   selectedButton: {
     backgroundColor: '#d3faffff',
     borderRadius: 10,
-    padding: 10,
+    padding: 7,
   },
   icon: {
     width: 20,

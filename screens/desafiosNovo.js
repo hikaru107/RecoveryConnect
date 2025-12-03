@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
 export default function DesafiosNovo({ navigation }) {
-  // Exibir desafios disponíveis para o usuário selecionar
   const [desafios, setDesafios] = useState([]);
   const [carregando, setCarregando] = useState(true);
 
@@ -82,7 +81,6 @@ export default function DesafiosNovo({ navigation }) {
   const [modalVisivel, setModalVisivel] = useState(false);
   const [desafioSelecionado, setDesafioSelecionado] = useState(null);
 
-  // Metas do usuário
   async function registrarMetaUsuario(desafioSelecionado) {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -287,6 +285,7 @@ const style = StyleSheet.create({
   },
   textoFiltro: {
     color: '#000',
+    fontSize: 12,
   },
   textoFiltroAtivo: {
     color: '#fff',

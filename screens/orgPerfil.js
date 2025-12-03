@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, TextInput, Modal } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, TextInput, Modal, ActivityIndicator } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import React, { useState, useEffect } from "react";
 import * as ImagePicker from 'expo-image-picker';
@@ -156,8 +156,27 @@ export default function OrgPerfil({ navigation }) {
 
   if (!clinicaData) {
     return (
-      <View style={{ display: 'flex', alignContent: 'center', justifyContent: 'center' }}>
-        <Text>Carregando dados...</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: 20,
+          backgroundColor: '#f7f7f7'
+        }}
+      >
+        <ActivityIndicator size="large" color="#4F46E5" />
+
+        <Text
+          style={{
+            marginTop: 15,
+            fontSize: 16,
+            color: '#555',
+            textAlign: 'center'
+          }}
+        >
+          Carregando dados...
+        </Text>
       </View>
     );
   }

@@ -1,24 +1,24 @@
-import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 
-export default function Tutorial1({navigation}) {
+export default function Tutorial1({ navigation }) {
   return (
     <View style={style.container}>
-      <Image style={style.img} source={require('../imagens/tutorial1.png')}/>
+      <Image style={style.img} source={require('../imagens/tutorial1.png')} />
 
       <Text style={style.title}>Como usar o aplicativo</Text>
       <Text style={style.text}>
-        Use o <Text style={{fontWeight: 'bold'}}>diário</Text> para anotar seu progresso e manter a motivação em dia! Você pode rever o seu feito à partir dos seus relatos!
+        Use o <Text style={{ fontWeight: 'bold' }}>diário</Text> para anotar seu progresso e manter a motivação em dia! Você pode rever o seu feito à partir dos seus relatos!
       </Text>
 
       <View style={style.buttonContainer}>
-        <TouchableOpacity style={style.button} onPress={()=>navigation.navigate("Tutorial2")}>
-          <Text style={{alignSelf:'center',fontWeight:'bold',}}>Prosseguir</Text>
+        <TouchableOpacity style={style.button} onPress={() => navigation.navigate("Tutorial2")}>
+          <Text style={{ alignSelf: 'center', fontWeight: 'bold', }}>Prosseguir</Text>
         </TouchableOpacity>
-        <View style={{flexDirection: 'row', width: '95%'}}>
-          <View style={style.activeBar}/>
-          <View style={style.inactiveBar}/>
-          <View style={style.inactiveBar}/>
-          <View style={style.inactiveBar}/>
+        <View style={{ flexDirection: 'row', width: '95%' }}>
+          <View style={style.activeBar} />
+          <View style={style.inactiveBar} />
+          <View style={style.inactiveBar} />
+          <View style={style.inactiveBar} />
         </View>
       </View>
     </View>
@@ -28,36 +28,40 @@ export default function Tutorial1({navigation}) {
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection:'column',
+    flexDirection: 'column',
     backgroundColor: 'white',
-    alignItems:'center',
+    alignItems: 'center',
   },
 
   img: {
     width: '100%',
+    height: undefined,
+    maxHeight: '40%',
+    aspectRatio: 1.25, 
+    resizeMode: 'cover',
   },
 
   title:{
-    fontSize: 28,
+    fontSize: 24,
     fontWeight:'bold',
     marginTop: 35,
   },
   text: {
     width: '70%',
-    fontSize: 17,
+    fontSize: 16,
     lineHeight: 23,
     marginVertical: 15,
   },
-  
+
   buttonContainer: {
     width: '60%',
-    alignItems: 'center',  
+    alignItems: 'center',
   },
-  button:{
-    backgroundColor:'#5ce1e6',
-    borderRadius:100,
+  button: {
+    backgroundColor: '#5ce1e6',
+    borderRadius: 100,
     padding: 10,
-    width:'100%',
+    width: '100%',
     marginTop: 20,
     marginBottom: 5,
   },

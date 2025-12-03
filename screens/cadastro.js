@@ -22,24 +22,10 @@ export default function Cadastro({ navigation }) {
   const [senhaTocada, setSenhaTocada] = useState(false);
   const [senhaConfTocada, setSenhaConfTocada] = useState(false);
 
-  const formValido =
-    nome.trim().length > 0 &&
-    email.trim().length > 0 &&
-    cidade.trim().length > 0 &&
-    senha.trim().length > 0 &&
-    confirmSenha.trim().length > 0 &&
-    senha === confirmSenha &&
-    validarEmail(email) &&
-    aceitou &&
-    !erroEmail &&
-    !erroSenha &&
-    !erroConfirm;
-
   const validarEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
   };
-
 
   function handleCheck() {
     setAceitou((prev) => !prev);
@@ -78,6 +64,19 @@ export default function Cadastro({ navigation }) {
       return;
     }
   }
+
+  const formValido =
+    nome.trim().length > 0 &&
+    email.trim().length > 0 &&
+    cidade.trim().length > 0 &&
+    senha.trim().length > 0 &&
+    confirmSenha.trim().length > 0 &&
+    senha === confirmSenha &&
+    validarEmail(email) &&
+    aceitou &&
+    !erroEmail &&
+    !erroSenha &&
+    !erroConfirm;
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -126,7 +125,7 @@ export default function Cadastro({ navigation }) {
           <View
             style={[
               est.passwordContainer,
-              !erroSenha && senhaTocada && { borderColor: 'red' }
+              erroSenha.length > 0 && senhaTocada && { borderColor: 'red' }
             ]}>
             <TextInput
               style={est.passwordInput}
@@ -155,7 +154,7 @@ export default function Cadastro({ navigation }) {
           <View
             style={[
               est.passwordContainer,
-              !confirmSenha && senhaConfTocada && { borderColor: 'red' }  // <— borda no container!
+              erroConfirm.length > 0 && senhaConfTocada && { borderColor: 'red' } 
             ]}>
             <TextInput
               style={est.passwordInput}

@@ -46,9 +46,12 @@ export default {
       eas: {
         projectId: "e13b3ac5-3de3-4832-b507-55dbd35e1741"
       },
-      SUPABASE_URL: process.env.SUPABASE_URL,
+      /*SUPABASE_URL: process.env.SUPABASE_URL,
       SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
-      GOOGLE_MAPS_KEY: process.env.GOOGLE_MAPS_KEY
+      GOOGLE_MAPS_KEY: process.env.GOOGLE_MAPS_KEY*/
+      SUPABASE_URL: "https://gntknwmgxgvgxffxdwin.supabase.co",
+      SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdudGtud21neGd2Z3hmZnhkd2luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2MTgyMTcsImV4cCI6MjA3MzE5NDIxN30.LDWGlze-xBOQRUxO0vWCBTh2npEnLHBjS4r4ozAoz5Q",
+      GOOGLE_MAPS_KEY: "AIzaSyAEhib2Ir3C_CYfOddPWppIR9To3oCcjIU" 
     }
   }
 };
